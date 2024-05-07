@@ -1,11 +1,11 @@
+import './App.css'
+import User from './getuser/User'
 
 function App() {
-
-
   return (
-    <>
-      <h1>MERN App</h1>
-    </>
+    <div className='app'>
+      <User />
+    </div>
   )
 }
 
