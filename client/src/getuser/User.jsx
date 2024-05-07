@@ -1,9 +1,27 @@
+import { useEffect, useState } from "react";
+import axios from 'axios'
 import "./user.css"
 import { FaTrash } from "react-icons/fa";
 import { FaPenToSquare } from "react-icons/fa6";
+import { Link } from "react-router-dom";
 
 
 const User = () => {
+
+    // connecting with backend
+    const [users, setUsers] = useState([])
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get("http://localhost:8000/api/allusers")
+                setUsers(response.data)
+            }
+            catch (error) {
+                console.log("error while fetching data ", error)
+            }
+        };
+        fetchData()
+    }, []);
 
     const buttonStyles = {
         backgroundColor: 'inherit'
@@ -11,10 +29,8 @@ const User = () => {
 
     return (
         <div className="userTable">
-            <button type="button" className="btn btn-primary"> Add User +
-            </button>
-
-
+            <Link to="/add" type="button" className="btn btn-primary"> Add User +
+            </Link>
 
             <table className="table table-bordered">
                 <thead>
@@ -27,25 +43,30 @@ const User = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>John Doe</td>
-                        <td>john@gmail.com</td>
-                        <td>New York, USA</td>
+                    {users.map((user, index) => {
+                        return (
+                            <tr key={index}>
+                                <td>{index + 1}</td>
+                                <td>{user.name}</td>
+                                <td>{user.email}</td>
+                                <td>{user.address}</td>
 
-                        <td className="actionButtons">
-                            <button type="button" className="btn btn-outline-info" style={buttonStyles}>
-                                <FaPenToSquare />
-                            </button>
-
-
-                            <button type="button" className="btn btn-outline-danger" style={buttonStyles}>
-                                <FaTrash />
-                            </button>
+                                <td className="actionButtons">
+                                    <button type="button" className="btn btn-outline-info" style={buttonStyles}>
+                                        <FaPenToSquare />
+                                    </button>
 
 
-                        </td>
-                    </tr>
+                                    <button type="button" className="btn btn-outline-danger" style={buttonStyles}>
+                                        <FaTrash />
+                                    </button>
+
+
+                                </td>
+                            </tr>
+                        )
+                    })}
+
 
                 </tbody>
             </table>
