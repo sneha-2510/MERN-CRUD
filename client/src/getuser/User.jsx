@@ -4,6 +4,7 @@ import "./user.css"
 import { FaTrash } from "react-icons/fa";
 import { FaPenToSquare } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+// import toast from "react-hot-toast"
 
 
 const User = () => {
@@ -22,6 +23,18 @@ const User = () => {
         };
         fetchData()
     }, []);
+
+    const deleteUser = async (userId) => {
+        await axios
+            .delete(`http://localhost:8000/api/delete/user/${userId}`)
+            .then((response) => {
+                setUsers((prevUser) => prevUser.filter((user) => user._id !== userId));
+                toast.success(response.data.message, { position: "top-right" });
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
 
     const buttonStyles = {
         backgroundColor: 'inherit'
@@ -52,12 +65,18 @@ const User = () => {
                                 <td>{user.address}</td>
 
                                 <td className="actionButtons">
-                                    <button type="button" className="btn btn-outline-info" style={buttonStyles}>
+                                    <Link to={`/update/` + user._id}
+                                        type="button" className="btn btn-outline-info" style={buttonStyles}>
                                         <FaPenToSquare />
-                                    </button>
+                                    </Link>
 
 
-                                    <button type="button" className="btn btn-outline-danger" style={buttonStyles}>
+                                    <button
+                                        onClick={() => deleteUser(user._id)}
+                                        type="button"
+                                        class="btn btn-danger"
+                                        style={buttonStyles}
+                                    >
                                         <FaTrash />
                                     </button>
 
@@ -66,8 +85,6 @@ const User = () => {
                             </tr>
                         )
                     })}
-
-
                 </tbody>
             </table>
         </div>)
